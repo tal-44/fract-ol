@@ -19,8 +19,8 @@ SRCS	= src/main.c \
 		  src/utils/events.c \
 		  src/utils/render.c \
 		  src/utils/errors_handle.c \
-		  src/utils/ft_printf/ft_printf.c \
-		  src/utils/ft_printf/ft_printf_utils.c \
+		  src/utils/libft/ft_printf/ft_printf.c \
+		  src/utils/libft/ft_printf/ft_printf_utils.c \
 
 # Object files (replaces src/ with obj/ and .c with .o)
 OBJS	= $(SRCS:src/%.c=obj/%.o)

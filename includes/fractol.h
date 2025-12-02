@@ -3,7 +3,7 @@
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-# include "../src/utils/ft_printf/ft_printf.h"
+# include "../src/utils/libft/ft_printf/ft_printf.h"
 # include "../src/utils/libft/libft.h"
 # include "mlx.h"
 # include <X11/X.h>
