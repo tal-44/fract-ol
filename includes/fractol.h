@@ -8,7 +8,6 @@
 # include "mlx.h"
 # include <X11/X.h>
 # include <X11/keysym.h>
-# include <math.h>
 # include <stdlib.h>
 # include <unistd.h>
 
@@ -73,7 +72,7 @@ typedef struct s_img
 typedef struct s_fractal
 {
 	char			*name;
-	double			scape_radius;
+	double			scape_radius_squared;
 	int				max_iterations;
 	void			*mlx_connection;
 	void			*mlx_window;
@@ -87,33 +86,32 @@ typedef struct s_fractal
 
 int					main(int argc, char **argv);
 
-// Fractal functions
+/* Fractal functions */
 void				fractal_init(t_fractal *fractal);
 void				fractal_render(t_fractal *fractal);
 void				events_init(t_fractal *fractal);
 void				data_init(t_fractal *fractal);
 
-// Complex number operations
+/* Complex number operations */
 t_complex_number	complex_add(t_complex_number a, t_complex_number b);
 t_complex_number	complex_mult(t_complex_number a, t_complex_number b);
 t_complex_number	complex_exp(t_complex_number z, int exponent);
 t_complex_number	complex_square(t_complex_number z);
 double				complex_abs2(t_complex_number z);
 
-// Error handling
+/* Error handling */
 int					malloc_error(void);
-
-// Event handling
-int					key_handle(int keycode, t_fractal *fractal);
-int					mouse_handle(int button, int x, int y, t_fractal *fractal);
 int					close_handle(t_fractal *fractal);
 
-// Utility functions
+/* Event handling */
+int					key_handle(int keycode, t_fractal *fractal);
+int					mouse_handle(int button, int x, int y, t_fractal *fractal);
+
+/* Utility functions */
 int					ft_strcmp(const char *s1, const char *s2);
 int					is_valid_number(char *str);
 double				atod(char *str);
-double				map(double unscaled_value, double new_min, double new_max,
-						double old_min, double old_max);
+double				map(double unscaled_value, double old_min, double old_max);
 unsigned int		get_gradient(int i, int max_iter);
 
 #endif

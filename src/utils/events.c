@@ -29,30 +29,21 @@ int	mouse_handle(int button, int x, int y, t_fractal *fractal)
 	double	mouse_re;
 	double	mouse_im;
 
-	if (button == 4)
+	if (button == 4 && fractal->zoom > 1e-10)
 		zoom_multiplier = 0.95;
-	else if (button == 5)
+	else if (button == 5 && fractal->zoom < 1e10)
 		zoom_multiplier = 1.05;
 	else
 		return (0);
-	mouse_re = (map((double)x, -1.5, 1.5, 0.0, (double)WINDOW_WIDTH_DEFAULT)
+	mouse_re = (map((double)x, 0.0, (double)WINDOW_WIDTH_DEFAULT)
 			* fractal->zoom) + fractal->shift_x;
-	mouse_im = (map((double)y, 1.5, -1.5, 0.0, (double)WINDOW_HEIGHT_DEFAULT)
+	mouse_im = (map((double)y, 0.0, (double)WINDOW_HEIGHT_DEFAULT)
 			* fractal->zoom) + fractal->shift_y;
 	fractal->zoom *= zoom_multiplier;
-	fractal->shift_x = mouse_re - (map((double)x, -1.5, 1.5, 0.0,
+	fractal->shift_x = mouse_re - (map((double)x, 0.0,
 				(double)WINDOW_WIDTH_DEFAULT) * fractal->zoom);
-	fractal->shift_y = mouse_im - (map((double)y, 1.5, -1.5, 0.0,
+	fractal->shift_y = mouse_im - (map((double)y, 0.0,
 				(double)WINDOW_HEIGHT_DEFAULT) * fractal->zoom);
 	fractal_render(fractal);
 	return (0);
-}
-
-int	close_handle(t_fractal *fractal)
-{
-	mlx_destroy_image(fractal->mlx_connection, fractal->image.img_ptr);
-	mlx_destroy_window(fractal->mlx_connection, fractal->mlx_window);
-	mlx_destroy_display(fractal->mlx_connection);
-	free(fractal->mlx_connection);
-	exit(EXIT_SUCCESS);
 }

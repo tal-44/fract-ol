@@ -5,11 +5,14 @@ static void	my_pixel_put(t_img *img, int x, int y, int color)
 {
 	int	pixel_offset;
 
+	if (x < 0 || x >= WINDOW_WIDTH_DEFAULT || y < 0 || y >= WINDOW_HEIGHT_DEFAULT)
+		return ;
 	pixel_offset = (img->line_length * y) + (x * (img->bits_per_pixel / 8));
 	*(unsigned int *)(pixel_offset + img->img_pixels_ptr) = color;
 }
 
-static void	mandelbrot_or_julia(t_fractal *fractal, t_complex_number *c, t_complex_number *z)
+static void	mandelbrot_or_julia(t_fractal *fractal,
+	t_complex_number *c, t_complex_number *z)
 {
 	if (!ft_strcmp(fractal->name, "Julia"))
 	{
@@ -20,30 +23,31 @@ static void	mandelbrot_or_julia(t_fractal *fractal, t_complex_number *c, t_compl
 	{
 		c->real = z->real;
 		c->imag = z->imag;
+		z->real = 0.0;
+		z->imag = 0.0;
 	}
 }
 
-// Mandelbrot set
-// Z = Z^2 + C
-//
-// Jualia set
-// Z = Z^2 + pixel_point
+/*
+** Mandelbrot set: Z = Z^2 + C
+** Julia set: Z = Z^2 + pixel_point
+*/
 static void	handle_pixel(t_fractal *fractal, int pixel_x, int pixel_y)
 {
 	int					i;
 	t_complex_number	z;
 	t_complex_number	c;
 
-	z.real = (map((double)pixel_x, -1.5, 1.5, 0.0, (double)WINDOW_WIDTH_DEFAULT))
+	z.real = (map((double)pixel_x, 0.0, (double)WINDOW_WIDTH_DEFAULT))
 			* fractal->zoom + fractal->shift_x;
-	z.imag = (map((double)pixel_y, 1.5, -1.5, 0.0, (double)WINDOW_HEIGHT_DEFAULT)
+	z.imag = (map((double)pixel_y, 0.0, (double)WINDOW_HEIGHT_DEFAULT)
 			* fractal->zoom) + fractal->shift_y;
 	mandelbrot_or_julia(fractal, &c, &z);
 	i = 0;
 	while (i < fractal->max_iterations)
 	{
 		z = complex_add(complex_square(z), c);
-		if (complex_abs2(z) > fractal->scape_radius * fractal->scape_radius)
+		if (complex_abs2(z) > fractal->scape_radius_squared)
 		{
 			my_pixel_put(&fractal->image, pixel_x, pixel_y, get_gradient(i,
 					fractal->max_iterations));

@@ -24,9 +24,9 @@ unsigned int	get_red_gradient(int i, int max_iter)
 	return (COLOR_MAGENTA);
 }
 
-
-
-// Dark blue → cyan → white
+/*
+** Gradient: Dark blue → cyan → white
+*/
 unsigned int	get_blue_gradient(int i, int max_iter)
 {
 	double	ratio;
@@ -43,7 +43,9 @@ unsigned int	get_blue_gradient(int i, int max_iter)
 	return ((r << 16) | (g << 8) | b);
 }
 
-// Black → neon purple → neon pink
+/*
+** Gradient: Black → neon purple → neon pink
+*/
 unsigned int	get_neon_gradient(int i, int max_iter)
 {
 	double	ratio;
