@@ -17,14 +17,14 @@
 
 # define ERROR_MALLOC_FAILED 1
 
+# define GRADIENT 3
+
 /* Basic colors */
 # define COLOR_BLACK 0x000000
 # define COLOR_WHITE 0xFFFFFF
 # define COLOR_RED 0xFF0000
 # define COLOR_GREEN 0x00FF00
 # define COLOR_BLUE 0x0000FF
-
-/* Nice vivid colors */
 # define COLOR_YELLOW 0xFFFF00
 # define COLOR_CYAN 0x00FFFF
 # define COLOR_MAGENTA 0xFF00FF
@@ -70,7 +70,7 @@ typedef struct s_img
 	int				line_length;
 }					t_img;
 
-typedef struct s_fractal_data
+typedef struct s_fractal
 {
 	char			*name;
 	double			scape_radius;
@@ -80,37 +80,40 @@ typedef struct s_fractal_data
 	t_img			image;
 	double			shift_x;
 	double			shift_y;
-}					t_fractal_data;
+	double			zoom;
+	double			julia_x;
+	double			julia_y;
+}					t_fractal;
 
 int					main(int argc, char **argv);
 
 // Fractal functions
-int					mandelbrot(t_fractal_data *fractal_data);
-void				fractal_init(t_fractal_data *fractal_data);
-void				fractal_render(t_fractal_data *fractal_data);
-void				events_init(t_fractal_data *fractal_data);
-void				data_init(t_fractal_data *fractal_data);
+void				fractal_init(t_fractal *fractal);
+void				fractal_render(t_fractal *fractal);
+void				events_init(t_fractal *fractal);
+void				data_init(t_fractal *fractal);
 
 // Complex number operations
 t_complex_number	complex_add(t_complex_number a, t_complex_number b);
 t_complex_number	complex_mult(t_complex_number a, t_complex_number b);
 t_complex_number	complex_exp(t_complex_number z, int exponent);
+t_complex_number	complex_square(t_complex_number z);
 double				complex_abs2(t_complex_number z);
-t_complex_number	complex_conjugate(t_complex_number z);
 
 // Error handling
 int					malloc_error(void);
 
 // Event handling
-int					key_handle(int keycode, t_fractal_data *fractal_data);
-// int mouse_handle(int button, int x, int y, t_fractal_data *fractal_data)
-int					mouse_handle(int button, t_fractal_data *fractal_data);
-int					close_handle(t_fractal_data *fractal_data);
+int					key_handle(int keycode, t_fractal *fractal);
+int					mouse_handle(int button, int x, int y, t_fractal *fractal);
+int					close_handle(t_fractal *fractal);
 
 // Utility functions
 int					ft_strcmp(const char *s1, const char *s2);
+int					is_valid_number(char *str);
+double				atod(char *str);
 double				map(double unscaled_value, double new_min, double new_max,
 						double old_min, double old_max);
-unsigned int		get_red_gradient(int i, int max_iter);
+unsigned int		get_gradient(int i, int max_iter);
 
 #endif

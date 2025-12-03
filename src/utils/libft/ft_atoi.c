@@ -36,11 +36,3 @@ int	ft_atoi(const char *str)
 	}
 	return ((int)(num * sign));
 }
-#include <stdio.h>
-
-int	main(void)
-{
-	char str[] = "     +-1234ab5678";
-	int result = ft_atoi(str);
-	printf("%d", result);
-}

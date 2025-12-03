@@ -7,14 +7,14 @@ RM		= rm -rf
 LIBFT_DIR	= src/utils/libft
 LIBFT		= $(LIBFT_DIR)/libft.a
 MLX_DIR		= minilibX
+MLX			= $(MLX_DIR)/libmlx.a
 
 # Source files
 SRCS	= src/main.c \
-		  src/mandelbrot.c \
-		  src/julia.c \
 		  src/utils/operations.c \
 		  src/utils/utilsa.c \
 		  src/utils/utils_maths.c \
+		  src/utils/utils_color.c \
 		  src/utils/minilibx_utils.c \
 		  src/utils/events.c \
 		  src/utils/render.c \
@@ -27,7 +27,7 @@ OBJS	= $(SRCS:src/%.c=obj/%.o)
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJS)
+$(NAME): $(LIBFT) $(MLX) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lXext -lX11 -lm
 	@echo "$(NAME) compiled successfully!"
 
@@ -35,14 +35,19 @@ $(LIBFT):
 	@echo "Compiling libft..."
 	@$(MAKE) -C $(LIBFT_DIR)
 
+$(MLX):
+	@echo "Compiling MiniLibX..."
+	@$(MAKE) -C $(MLX_DIR)
+
 # Pattern rule: compiles any .c file in src/ to .o file in obj/
 obj/%.o: src/%.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) -Iincludes -I$(LIBFT_DIR) -c $< -o $@
+	@$(CC) $(CFLAGS) -Iincludes -I$(MLX_DIR) -I$(LIBFT_DIR) -c $< -o $@
 
 clean:
 	@$(RM) obj
 	@$(MAKE) -C $(LIBFT_DIR) clean
+	@$(MAKE) -C $(MLX_DIR) clean
 	@echo "Object files removed"
 
 fclean: clean

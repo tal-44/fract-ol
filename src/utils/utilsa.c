@@ -10,29 +10,72 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }
 
-// Creates gradient: divides iterations into 5 color stages
-//		(red->yellow->green->cyan->blue->magenta)
-// and fades between consecutive colors using bit shifts
-unsigned int	get_red_gradient(int i, int max_iter)
+int	is_valid_number(char *str)
 {
-	double	t;
-	int		stage;
-	double	fade;
+	int	has_digit;
 
-	if (i >= max_iter)
-		return (COLOR_BLACK);
-	t = (double)i / (double)max_iter * 5.0;
-	stage = (int)t;
-	fade = t - stage;
-	if (stage == 0)
-		return (COLOR_RED + ((int)(255 * fade) << 8));
-	else if (stage == 1)
-		return (COLOR_YELLOW - ((int)(255 * fade) << 16));
-	else if (stage == 2)
-		return (COLOR_GREEN + (int)(255 * fade));
-	else if (stage == 3)
-		return (COLOR_CYAN - ((int)(255 * fade) << 8));
-	else if (stage == 4)
-		return (COLOR_BLUE + ((int)(255 * fade) << 16));
-	return (COLOR_MAGENTA);
+	has_digit = 0;
+	if (*str == '-' || *str == '+')
+		str++;
+	while (*str && *str != '.' && *str != ',')
+	{
+		if (*str < '0' || *str > '9')
+			return (0);
+		has_digit = 1;
+		str++;
+	}
+	if (*str == '.' || *str == ',')
+	{
+		str++;
+		while (*str)
+		{
+			if (*str < '0' || *str > '9')
+				return (0);
+			has_digit = 1;
+			str++;
+		}
+	}
+	return (has_digit);
+}
+
+static double	atod_helper(const char *str)
+{
+	double	fractional_part;
+	double	divisor;
+
+	fractional_part = 0.0;
+	divisor = 1.0;
+	while (*str)
+	{
+		fractional_part = fractional_part * 10.0 + (*str - '0');
+		divisor *= 10.0;
+		str++;
+	}
+	return (fractional_part / divisor);
+}
+
+// Ascii to double
+double	atod(char *str)
+{
+	long	integer_part;
+	int		sign;
+
+	if (!str || !*str || !is_valid_number(str))
+		return (0.0);
+	integer_part = 0;
+	sign = 1;
+	if (*str == '-' || *str == '+')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (*str != '.' && *str != ',' && *str)
+	{
+		integer_part = integer_part * 10 + (*str - '0');
+		str++;
+	}
+	if (*str == '.' || *str == ',')
+		str++;
+	return (sign * (integer_part + atod_helper(str)));
 }

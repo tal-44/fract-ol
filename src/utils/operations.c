@@ -34,16 +34,16 @@ t_complex_number	complex_exp(t_complex_number z, int exponent)
 	return (result);
 }
 
+t_complex_number	complex_square(t_complex_number z)
+{
+	t_complex_number	result;
+
+	result.real = z.real * z.real - z.imag * z.imag;
+	result.imag = 2.0 * z.real * z.imag;
+	return (result);
+}
+
 double	complex_abs2(t_complex_number z)
 {
 	return (z.real * z.real + z.imag * z.imag);
-}
-
-t_complex_number	complex_conjugate(t_complex_number z)
-{
-	t_complex_number	r;
-
-	r.real = z.real;
-	r.imag = -z.imag;
-	return (r);
 }

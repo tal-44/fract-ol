@@ -1,4 +1,3 @@
-
 #include "fractol.h"
 
 // scales unscaled_value from old range

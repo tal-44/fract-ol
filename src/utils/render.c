@@ -9,37 +9,52 @@ static void	my_pixel_put(t_img *img, int x, int y, int color)
 	*(unsigned int *)(pixel_offset + img->img_pixels_ptr) = color;
 }
 
-// Z = Z^4 + C
-static void	handle_pixel(t_fractal_data *fractal_data, int pixel_x, int pixel_y)
+static void	mandelbrot_or_julia(t_fractal *fractal, t_complex_number *c, t_complex_number *z)
+{
+	if (!ft_strcmp(fractal->name, "Julia"))
+	{
+		c->real = fractal->julia_x;
+		c->imag = fractal->julia_y;
+	}
+	else
+	{
+		c->real = z->real;
+		c->imag = z->imag;
+	}
+}
+
+// Mandelbrot set
+// Z = Z^2 + C
+//
+// Jualia set
+// Z = Z^2 + pixel_point
+static void	handle_pixel(t_fractal *fractal, int pixel_x, int pixel_y)
 {
 	int					i;
 	t_complex_number	z;
 	t_complex_number	c;
-	t_complex_number	result;
 
-	z.real = 0.0;
-	z.imag = 0.0;
-	c.real = map((double)pixel_x, -1.5, 1.5, 0.0, (double)WINDOW_WIDTH_DEFAULT)
-		+ fractal_data->shift_x;
-	c.imag = map((double)pixel_y, 1.5, -1.5, 0.0, (double)WINDOW_HEIGHT_DEFAULT)
-		+ fractal_data->shift_y;
-	i = -1;
-	while (++i <= fractal_data->max_iterations)
+	z.real = (map((double)pixel_x, -1.5, 1.5, 0.0, (double)WINDOW_WIDTH_DEFAULT))
+			* fractal->zoom + fractal->shift_x;
+	z.imag = (map((double)pixel_y, 1.5, -1.5, 0.0, (double)WINDOW_HEIGHT_DEFAULT)
+			* fractal->zoom) + fractal->shift_y;
+	mandelbrot_or_julia(fractal, &c, &z);
+	i = 0;
+	while (i < fractal->max_iterations)
 	{
-		result = complex_add(complex_exp(z, 4), c);
-		if (complex_abs2(result) > (fractal_data->scape_radius
-				* fractal_data->scape_radius))
+		z = complex_add(complex_square(z), c);
+		if (complex_abs2(z) > fractal->scape_radius * fractal->scape_radius)
 		{
-			my_pixel_put(&fractal_data->image, pixel_x, pixel_y,
-				get_red_gradient(i, fractal_data->max_iterations));
+			my_pixel_put(&fractal->image, pixel_x, pixel_y, get_gradient(i,
+					fractal->max_iterations));
 			return ;
 		}
-		z = result;
+		i++;
 	}
-	my_pixel_put(&fractal_data->image, pixel_x, pixel_y, COLOR_DARK_PURPLE);
+	my_pixel_put(&fractal->image, pixel_x, pixel_y, COLOR_BLACK);
 }
 
-void	fractal_render(t_fractal_data *fractal_data)
+void	fractal_render(t_fractal *fractal)
 {
 	int	pixel_x;
 	int	pixel_y;
@@ -50,11 +65,9 @@ void	fractal_render(t_fractal_data *fractal_data)
 		pixel_x = -1;
 		while (++pixel_x < WINDOW_WIDTH_DEFAULT)
 		{
-			handle_pixel(fractal_data, pixel_x, pixel_y);
+			handle_pixel(fractal, pixel_x, pixel_y);
 		}
 	}
-	mlx_put_image_to_window(fractal_data->mlx_connection,
-		fractal_data->mlx_window,
-		fractal_data->image.img_ptr,
-		0, 0);
+	mlx_put_image_to_window(fractal->mlx_connection, fractal->mlx_window,
+		fractal->image.img_ptr, 0, 0);
 }
